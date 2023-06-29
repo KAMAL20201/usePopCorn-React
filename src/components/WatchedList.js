@@ -1,6 +1,10 @@
 import React from 'react'
 
-function WatchedList({watched}) {
+function WatchedList({watched,onDelete}) {
+
+  const deleteHandler = (id) => {
+    onDelete(id);
+  }
   return (
     <div>
       <ul className="list">
@@ -21,6 +25,7 @@ function WatchedList({watched}) {
                         <span>⏳</span>
                         <span>{movie.runtime} </span>
                       </p>
+                      <button className='btn-delete' onClick={()=>deleteHandler(movie.imdbID)}>X</button>
                     </div>
                   </li>
                 ))}

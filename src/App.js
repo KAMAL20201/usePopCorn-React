@@ -34,12 +34,18 @@ const average = (arr) =>
 
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState([]);
   const [searchinput, setSearchinput] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  // const [watched, setWatched] = useState([]);
+
+  //useState takes callbackk function and use the returned value by function
+  //as initial state
+  const [watched, setWatched] = useState(function (){
+    const storedData=localStorage.getItem("watched");
+    return JSON.parse(storedData);
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,11 +66,13 @@ export default function App() {
         setError(error.message);
       }
     };
-
+    if(searchinput!=='')
     fetchData();
   }, [searchinput]);
 
-  
+  useEffect(() => {
+    localStorage.setItem('watched',JSON.stringify(watched));
+  },[watched])
   const avgRuntime = average(watched.map((movie) => movie.runtime));
 
   const inputHandler = (inputval) => {
@@ -78,7 +86,13 @@ export default function App() {
 
   const addToListHandler = (movie) => {
     setWatched([...watched, movie]);
+    
   };
+
+  const deleteHandler = (id) => {
+    setWatched(watched.filter((movie)=>movie.imdbID!==id));
+  }
+
   return (
     <>
       <NavBar movies={movies} onEnteringInput={inputHandler} />
@@ -89,6 +103,7 @@ export default function App() {
           isLoading={isLoading}
           error={error}
           onSelectedMovie={selectedMovieHandler}
+          
         />
 
         <div className="box">
@@ -97,6 +112,7 @@ export default function App() {
               id={selectedMovie}
               onBackClick={() => setSelectedMovie(null)}
               onAddToList={addToListHandler}
+              watched={watched}
             />
           ) : (
             <>
@@ -105,7 +121,7 @@ export default function App() {
                 avgRuntime={avgRuntime}
               />
 
-              <WatchedList watched={watched} />
+              <WatchedList watched={watched} onDelete={deleteHandler}/>
             </>
           )}
         </div>

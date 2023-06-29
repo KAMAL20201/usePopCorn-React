@@ -1,6 +1,8 @@
 import React from "react";
 
 function Movies({ movies, isLoading, error,onSelectedMovie }) {
+
+  console.log(movies);
   return (
     <div className="box">
       {isLoading ? (
@@ -23,7 +25,7 @@ function Movies({ movies, isLoading, error,onSelectedMovie }) {
           ))}
         </ul>
       ) : (
-        <h1 className="no-movies">No Movies Found</h1>
+        <h1 className="no-movies"> No Movies Found</h1>
       )}
     </div>
   );
